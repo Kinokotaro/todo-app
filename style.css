@@ -1,0 +1,153 @@
+/* 全体のスタイル */
+body {
+    font-family: sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* コンテナのスタイル */
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 450px; /* 少し幅を広げます */
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+/* 入力エリアのスタイル */
+.input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px; /* 少し調整 */
+}
+
+#task-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#date-input, #priority-input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#add-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#add-button:hover {
+    background-color: #45a049;
+}
+
+/* フィルターエリアのスタイル */
+.filter-area {
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+#filter-button {
+    background-color: #008CBA; /* 青色 */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#filter-button:hover {
+    background-color: #007B9A;
+}
+
+/* タスクリストのスタイル */
+#task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#task-list li {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s;
+    border-left: 5px solid #ccc; /* 優先度のデフォルト色 */
+}
+
+/* 優先度に応じた色分け */
+#task-list li.priority-high { border-left-color: #f44336; } /* 高: 赤 */
+#task-list li.priority-medium { border-left-color: #ff9800; } /* 中: オレンジ */
+#task-list li.priority-low { border-left-color: #4caf50; } /* 低: 緑 */
+
+
+#task-list li.hidden {
+    display: none;
+}
+
+.task-content {
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+.task-content.completed .task-text {
+    text-decoration: line-through;
+    color: #aaa;
+}
+
+.task-date {
+    font-size: 0.8em;
+    color: #777;
+    margin-left: 10px;
+}
+
+.button-group {
+    display: flex;
+    gap: 5px;
+}
+
+.edit-button, .delete-button {
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.edit-button {
+    background-color: #ffc107; /* 黄色 */
+}
+
+.edit-button:hover {
+    background-color: #e0a800;
+}
+
+.delete-button {
+    background-color: #f44336; /* 赤色 */
+}
+
+.delete-button:hover {
+    background-color: #da190b;
+}
