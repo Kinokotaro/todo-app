@@ -81,6 +81,7 @@ h1 {
 #task-list li.dragging {
     opacity: 0.5;
     background: #cce5ff;
+    transform: scale(1.02);
 }
 
 
@@ -91,6 +92,9 @@ h1 {
 .task-content {
     cursor: pointer;
     flex-grow: 1;
+    display: flex; /* 子要素を横並びにする */
+    align-items: center; /* 中央揃え */
+    flex-wrap: wrap; /* 折り返し */
 }
 
 .task-content.completed .task-text {
@@ -98,10 +102,25 @@ h1 {
     color: #888;
 }
 
+.task-text {
+    margin-right: 10px;
+}
+
 .task-date {
     font-size: 0.9em;
     color: #666;
-    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.priority-span {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: #eee;
+    margin-right: 10px;
 }
 
 .button-group button {
@@ -114,11 +133,13 @@ h1 {
 
 .edit-button {
     background-color: #ffc107;
+    font-size: 1em; /* 絵文字のサイズ調整 */
 }
 
 .delete-button {
     background-color: #dc3545;
     color: white;
+    font-size: 1em; /* 絵文字のサイズ調整 */
 }
 
 /* 優先度に応じた色分け */
@@ -135,4 +156,12 @@ h1 {
 /* 完了済みタスクを非表示にする */
 .hide-completed .completed {
     display: none;
+}
+
+.edit-input, .date-edit-input {
+    flex-grow: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-right: 10px; /* 他要素との間隔 */
 }
