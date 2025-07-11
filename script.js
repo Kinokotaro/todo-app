@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         prioritySpan.className = 'priority-span';
         const priorities = ['low', 'medium', 'high'];
         const priorityMap = { low: '低', medium: '中', high: '高' };
-        prioritySpan.textContent = `[${priorityMap[priority]}]`;
+        // prioritySpan.textContent = `[${priorityMap[priority]}]`; // テキスト表示を削除
         prioritySpan.addEventListener('click', (e) => {
             e.stopPropagation();
             let currentPriorityIndex = priorities.indexOf(priority);
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             li.classList.remove(`priority-${priority}`);
             li.classList.add(`priority-${nextPriority}`);
             priority = nextPriority; // priority変数を更新
-            prioritySpan.textContent = `[${priorityMap[priority]}]`;
+            // prioritySpan.textContent = `[${priorityMap[priority]}]`; // テキスト表示を削除
             saveTasks();
         });
 
@@ -198,7 +198,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         li.appendChild(taskContent);
         li.appendChild(buttonGroup);
-        taskList.appendChild(li);
+        // タスクを優先度に基づいて挿入
+        const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
+        let inserted = false;
+        for (let i = 0; i < taskList.children.length; i++) {
+            const existingLi = taskList.children[i];
+            const existingPriorityClass = existingLi.className.split(' ').find(c => c.startsWith('priority-'));
+            const existingPriority = existingPriorityClass ? existingPriorityClass.split('-')[1] : 'medium';
+
+            if (priorityOrder[priority] > priorityOrder[existingPriority]) {
+                taskList.insertBefore(li, existingLi);
+                inserted = true;
+                break;
+            }
+        }
+        if (!inserted) {
+            taskList.appendChild(li);
+        }
     }
 
     // ドラッグアンドドロップのイベントリスナー
@@ -316,6 +332,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadTasks() {
         const tasks = JSON.parse(localStorage.getItem('tasks'));
         if (tasks) {
+            // 優先度でソートしてから追加
+            const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
+            tasks.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
             tasks.forEach(task => {
                 addTask(task.text, task.date, task.priority, task.isCompleted);
             });
