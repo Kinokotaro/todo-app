@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addButton = document.getElementById('add-button');
     const filterButton = document.getElementById('filter-button');
     const taskList = document.getElementById('task-list');
+    let draggedItem = null;
 
     // ページ読み込み時に履歴を復元
     loadTasks();
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function addTask(text, date, priority, isCompleted) {
         const li = document.createElement('li');
         li.className = `priority-${priority}`;
+        li.draggable = true; // ドラッグ可能にする
         if (isCompleted) {
             li.classList.add('completed');
         }
@@ -70,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 編集ボタン
         const editButton = document.createElement('button');
         editButton.className = 'edit-button';
-        editButton.textContent = '編集';
+        editButton.innerHTML = '<i class="fa-solid fa-pencil"></i>'; // アイコンに変更
         editButton.addEventListener('click', (e) => {
             e.stopPropagation(); // 親要素へのクリックイベント伝播を停止
             const newText = prompt('タスクを編集してください:', text);
@@ -83,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 削除ボタン
         const deleteButton = document.createElement('button');
         deleteButton.className = 'delete-button';
-        deleteButton.textContent = '削除';
+        deleteButton.innerHTML = '<i class="fa-solid fa-trash-can"></i>'; // アイコンに変更
         deleteButton.addEventListener('click', () => {
             taskList.removeChild(li);
             saveTasks();
@@ -97,6 +99,43 @@ document.addEventListener('DOMContentLoaded', () => {
         taskList.appendChild(li);
     }
 
+    // ドラッグアンドドロップのイベントリスナー
+    taskList.addEventListener('dragstart', e => {
+        draggedItem = e.target;
+        e.target.classList.add('dragging');
+    });
+
+    taskList.addEventListener('dragend', e => {
+        e.target.classList.remove('dragging');
+        saveTasks();
+    });
+
+    taskList.addEventListener('dragover', e => {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(taskList, e.clientY);
+        const dragging = document.querySelector('.dragging');
+        if (afterElement == null) {
+            taskList.appendChild(dragging);
+        } else {
+            taskList.insertBefore(dragging, afterElement);
+        }
+    });
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('li:not(.dragging)')];
+
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+
     // タスクをローカルストレージに保存する関数
     function saveTasks() {
         const tasks = [];
@@ -105,8 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const text = li.querySelector('.task-text').textContent;
             const dateText = li.querySelector('.task-date').textContent;
             const isCompleted = li.classList.contains('completed');
-            const priority = li.className.replace('completed', '').trim().split('-')[1];
-            
+            const priorityClass = li.className.split(' ').find(c => c.startsWith('priority-'));
+            const priority = priorityClass ? priorityClass.split('-')[1] : 'medium';
+
+
             let date = '';
             const dateMatch = dateText.match(/\(期限: (.*)\)/);
             if (dateMatch) {
